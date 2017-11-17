@@ -263,6 +263,20 @@ const deleteAllFromDatabase = (modelType) => {
   return model.data;
 }
 
+const getFromDatabaseByRelationship = (modelType, id, foreignKeyName) => {
+  const model = findDataArrayByName(modelType);
+  if(model === null){
+    return null;
+  }
+  let list = [];
+  model.data.find((element) => {
+    if(element[foreignKeyName] === id){
+      list.push(element);
+    }
+  });
+  return list;
+}
+
 module.exports = {
   createMeeting,
   getAllFromDatabase,
@@ -271,4 +285,5 @@ module.exports = {
   updateInstanceInDatabase,
   deleteFromDatabasebyId,
   deleteAllFromDatabase,
+  getFromDatabaseByRelationship,
 };
