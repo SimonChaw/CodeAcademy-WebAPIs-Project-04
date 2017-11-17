@@ -66,10 +66,49 @@ apiRouter.post('/minions/:id/work', (req, res, next) =>{
 });
 
 //IDEAS
-let ideas = db.getAllFromDatabase('ideas');
 apiRouter.get('/ideas', (req, res, next) => {
-  res.send(ideas);
+  res.send(db.getAllFromDatabase('ideas'));
 });
+
+apiRouter.get('/ideas/:id', (req, res, next) => {
+  const idea = db.getFromDatabaseById('ideas', req.params.id);
+  if(idea){
+    res.send(idea);
+  }else{
+    res.status(404).send('Idea not found');
+  }
+});
+
+apiRouter.post('/ideas', (req, res, next) =>{
+  const idea = req && req.body;
+  if(idea.name && idea.description && idea.weeklyRevenue && idea.numWeeks){
+    db.addToDatabase('ideas', idea);
+    res.status(201).send(idea);
+  }else{
+    res.status(400).send('Idea not created');
+  }
+});
+
+apiRouter.put('/ideas/:id', (req, res, next) => {
+  const newIdea = req && req.body;
+  if(newIdea.name && newIdea.description && newIdea.weeklyRevenue && newIdea.numWeeks){
+    db.updateInstanceInDatabase('ideas', newIdea);
+    res.send(newIdea);
+  }else{
+    res.status(404).send('Idea not found');
+  }
+});
+
+apiRouter.delete('/ideas/:id', (req, res, next) => {
+  const idea = db.getFromDatabaseById('ideas', req.params.id);
+  if(idea){
+    db.deleteFromDatabasebyId(req.params.id);
+    res.status(204).send();
+  }else{
+    res.status(404).send('Idea not found');
+  }
+});
+
 //MEETINGS
 let meetings = db.getAllFromDatabase('meetings');
 apiRouter.get('/meetings', (req, res, next) => {
