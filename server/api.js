@@ -1,21 +1,5 @@
 const express = require('express');
 const apiRouter = express.Router();
-const db = require('./db');
-const checkMillionDollarIdea = require('./checkMillionDollarIdea');
-//MINIONS
-//GET
-apiRouter.get('/minions', (req, res, next) => {
-  res.send(db.getAllFromDatabase('minions'));
-});
-
-apiRouter.get('/minions/:id', (req, res, next) =>{
-  const minion = db.getFromDatabaseById('minions', req.params.id);
-  if(minion){
-    res.send(minion);
-  }else{
-    res.status(404).send('Minion not found.');
-  }
-});
 
 apiRouter.post('/minions', (req, res, next) =>{
   const newMinion = req && req.body;
