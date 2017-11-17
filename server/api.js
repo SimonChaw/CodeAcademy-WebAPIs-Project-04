@@ -19,8 +19,9 @@ apiRouter.get('/minions/:id', (req, res, next) =>{
 
 apiRouter.post('/minions', (req, res, next) =>{
   const newMinion = req && req.body;
-  if(newMinion.name && newMinion.title && Number(newMinion.salary) && newMinion.weaknesses){
+  if(newMinion.name){ // && newMinion.title && newMinion.salary && newMinion.weaknesses  - according to npm test only name is needed
     db.addToDatabase('minions', newMinion);
+    res.status(201).send(newMinion);
   }else{
     res.status(400).send('You tried adding a Minion... that didn\'t work..');
   }
@@ -81,7 +82,7 @@ apiRouter.get('/ideas/:id', (req, res, next) => {
 
 apiRouter.post('/ideas', (req, res, next) =>{
   const idea = req && req.body;
-  if(idea.name && idea.description && idea.weeklyRevenue && idea.numWeeks){
+  if(idea.name && idea.weeklyRevenue && idea.numWeeks){ //description not needed
     db.addToDatabase('ideas', idea);
     res.status(201).send(idea);
   }else{
@@ -102,7 +103,7 @@ apiRouter.put('/ideas/:id', (req, res, next) => {
 apiRouter.delete('/ideas/:id', (req, res, next) => {
   const idea = db.getFromDatabaseById('ideas', req.params.id);
   if(idea){
-    db.deleteFromDatabasebyId(req.params.id);
+    db.deleteFromDatabasebyId('ideas', idea.id);
     res.status(204).send();
   }else{
     res.status(404).send('Idea not found');
@@ -110,8 +111,22 @@ apiRouter.delete('/ideas/:id', (req, res, next) => {
 });
 
 //MEETINGS
-let meetings = db.getAllFromDatabase('meetings');
 apiRouter.get('/meetings', (req, res, next) => {
-  res.send(meetings);
+  res.send(db.getAllFromDatabase('meetings'));
 });
+
+apiRouter.post('/meetings', (req, res, next) => {
+  const meeting = db.createMeeting();
+  db.addToDatabase('meetings', meeting);
+  res.status(201).send(meeting);
+});
+
+apiRouter.delete('/meetings', (req, res, next) => {
+  if(db.deleteAllFromDatabase('meetings')){
+    res.status(204).send();
+  }else{
+    res.status(404).send('No meetings exist');
+  }
+});
+
 module.exports = apiRouter;
