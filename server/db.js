@@ -262,6 +262,20 @@ const deleteAllFromDatabase = (modelType) => {
   model.data = [];
   return model.data;
 }
+//Get model where id = foreign key for another model
+const getFromDatabaseByRelationship = (modelType, id, foreignKeyName) => {
+  const model = findDataArrayByName(modelType);
+  const list = []; // array to store multiple matches
+  if(model === null){
+    return null;
+  }
+  model.data.find((element) => {
+    if(element[foreignKeyName] === id){//if the specified property matches the foreign key id add it to the list. ex: work['minionId'] === minion.id; 
+      list.push(element);
+    }
+  });
+  return list;
+}
 
 module.exports = {
   createMeeting,
@@ -271,4 +285,5 @@ module.exports = {
   updateInstanceInDatabase,
   deleteFromDatabasebyId,
   deleteAllFromDatabase,
+  getFromDatabaseByRelationship,
 };
