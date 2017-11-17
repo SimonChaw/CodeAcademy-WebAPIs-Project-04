@@ -1,7 +1,7 @@
 const express = require('express');
 const apiRouter = express.Router();
 const db = require('./db');
-
+const checkMillionDollarIdea = require('./checkMillionDollarIdea');
 //MINIONS
 //GET
 apiRouter.get('/minions', (req, res, next) => {
@@ -80,7 +80,7 @@ apiRouter.get('/ideas/:id', (req, res, next) => {
   }
 });
 
-apiRouter.post('/ideas', (req, res, next) =>{
+apiRouter.post('/ideas', checkMillionDollarIdea, (req, res, next) =>{
   const idea = req && req.body;
   if(idea.name && idea.weeklyRevenue && idea.numWeeks){ //description not needed
     db.addToDatabase('ideas', idea);
